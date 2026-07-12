@@ -7,7 +7,6 @@ const App = () => {
     <>
     <Navbar />
     <Routes>
-        
         <Route path="/credits" element={<Credits />} />
       </Routes>
     </>

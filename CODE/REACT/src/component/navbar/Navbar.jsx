@@ -161,7 +161,6 @@ const Navbar = () => {
 
         <h2 className="abesname">ABES Autonomy</h2>
       </div>
-
       <div className="nav-right">
         <ul>
         <li><Link to="/">Home</Link></li>
