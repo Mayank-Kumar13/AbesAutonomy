@@ -4,6 +4,7 @@ import Credits from './pages/Credits';
 import HomeContent from './component/home/HomeContent';
 import { Routes, Route } from "react-router-dom";
 
+
 const App = () => {
   return (
     <div className="bg-[#080b0e] min-h-screen w-full flex flex-col">
@@ -22,6 +23,19 @@ const App = () => {
 
     
   );
+
+import Resources from './pages/Resources';
+const App = () => {
+  return (
+    <>
+    <Navbar />
+    <Routes>
+         <Route path="/resources" element={<Resources/>} />
+        <Route path="/credits" element={<Credits />} />
+      </Routes>
+    </>
+  )
+
 }
 
 export default App;
