@@ -12,13 +12,13 @@ const Credit_Card = (props) => {
         <h4>{props.description}</h4>
         <div className="end">
           <div className="socials">
-            <a href="#">
+            <a href={props.github}>
               <FaGithub />
             </a>
-            <a href="#">
+            <a href={props.linkedin}>
               <FaLinkedinIn />
             </a>
-            <a href="#">
+            <a href={props.instagram}>
               <FaInstagram />
             </a>
           </div>
