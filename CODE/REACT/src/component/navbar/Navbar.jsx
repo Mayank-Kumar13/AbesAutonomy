@@ -1,5 +1,6 @@
 import React from "react";
 import "./Navbar.css";
+import { Link } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 const Navbar = () => {
   const isLoggedIn = false;
@@ -163,10 +164,10 @@ const Navbar = () => {
 
       <div className="nav-right">
         <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Resources</a></li>
-          <li><a href="#">AMCAT</a></li>
-          <li><a href="#">Credits</a></li>
+        <li><Link to="/">Home</Link></li>
+        <li><Link to="/resources">Resources</Link></li>
+        <li><Link to="/amcat">AMCAT</Link></li>
+        <li><Link to="/credits">Credits</Link></li>
         </ul>
 
         {isLoggedIn ? (
