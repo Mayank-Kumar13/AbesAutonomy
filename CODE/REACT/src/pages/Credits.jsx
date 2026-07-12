@@ -2,10 +2,10 @@ import React from 'react'
 import Credit_Card from '../component/credit_card/Credit_Card.jsx'
 import "./Credits.css"
 const Credits = () => {
-    let linkedin=["0","https://www.linkedin.com/in/mayank-kumar-206209377/","2"]
-    let instagram=["0","https://www.instagram.com/tomar.13?igsh=MWFmeWp0azkzYzZiOA==","2"]
-    let github=["0","https://github.com/Mayank-Kumar13","2"]
-    let description=["0","Believes consistency beats talent, learning something new every day while building skills for a brighter future.","2"]
+    let linkedin=["https://www.linkedin.com/in/mayank-kotuli-445891363/","https://www.linkedin.com/in/mayank-kumar-206209377/","2"]
+    let instagram=["https://www.instagram.com/_mayank099_/","https://www.instagram.com/tomar.13?igsh=MWFmeWp0azkzYzZiOA==","2"]
+    let github=["https://github.com/mayankkotuli099","https://github.com/Mayank-Kumar13","2"]
+    let description=["","Believes consistency beats talent, learning something new every day while building skills for a brighter future.","2"]
   return (
     <>
     <div className="details">
