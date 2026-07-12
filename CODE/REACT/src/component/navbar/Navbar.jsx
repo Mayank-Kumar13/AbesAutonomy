@@ -3,7 +3,7 @@ import "./Navbar.css";
 import { Link } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 const Navbar = () => {
-  const isLoggedIn = false;
+  const isLoggedIn = true;
 
   return (
     <nav className="navbar">

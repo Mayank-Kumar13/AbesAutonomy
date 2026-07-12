@@ -1,16 +1,16 @@
 import React from 'react'
 import Navbar from './component/navbar/Navbar'
-import Home from './pages/Home'
+import Credits from './pages/Credits'
 import { Routes, Route } from "react-router-dom";
 const App = () => {
   return (
     <>
     <Navbar />
     <Routes>
-        <Route path="/" element={<Home />} />
+        
+        <Route path="/credits" element={<Credits />} />
       </Routes>
     </>
   )
 }
-
 export default App
