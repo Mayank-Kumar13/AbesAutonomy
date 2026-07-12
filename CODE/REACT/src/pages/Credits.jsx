@@ -5,7 +5,7 @@ const Credits = () => {
     let linkedin=["0","https://www.linkedin.com/in/mayank-kumar-206209377/","2"]
     let instagram=["0","https://www.instagram.com/tomar.13?igsh=MWFmeWp0azkzYzZiOA==","2"]
     let github=["0","https://github.com/Mayank-Kumar13","2"]
-    let description=["0","Believes consistency beats talent, learning something new every day while building skills for a brighter future.","2"]
+    let description=["Passionate about technology and innovation, constantly learning, building, and turning ideas into impactful solutions while growing into a better developer every day.","Believes consistency beats talent, learning something new every day while building skills for a brighter future.","2"]
   return (
     <>
     <div className="details">
