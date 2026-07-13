@@ -127,6 +127,7 @@
     display:grid;
     grid-template-columns:repeat(4,1fr);
     gap:24px;
+    text-decoration: none;
 }
 
 .resource-card{
@@ -160,6 +161,7 @@
     font-size:15px;
     margin-bottom:28px;
     min-height:70px;
+    text-decoration: none;
 }
 
 .resource-card button{
@@ -229,4 +231,33 @@
     font-size:30px;
     font-family:"Times New Roman", serif;
     margin-left:48px;
+}
+.resource-link{
+    text-decoration:none;
+    color:unset;
+    display:block;
+}
+
+.resource-link:link,
+.resource-link:visited,
+.resource-link:hover,
+.resource-link:active{
+    text-decoration:none;
+    color:unset;
+}
+
+.resource-link .resource-card{
+    color:white;
+}
+
+.resource-link .resource-card h3{
+    color:white;
+}
+
+.resource-link .resource-card p{
+    color:#aeb8c4;
+}
+
+.resource-link .card-icon{
+    color:#d4a373;
 }

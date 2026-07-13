@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './ChooseSubject.css';
-import Unicard from './Unicard';
+import Unicard from "../../component/universal_card/Unicard";
 import { 
   LineChart, 
   BrainCircuit, 

@@ -1,7 +1,7 @@
 import React from "react";
 import "./HomeContent.css";
 import buildingPhoto from "../../../IMAGES/BUILDING.png";
-
+import { Link } from "react-router-dom";
 import {
   Search,
   ClipboardList,
@@ -100,29 +100,35 @@ const HomeContent = () => {
 
       <section className="resource-section">
 
-        {cards.map((card, index) => (
+  {cards.map((card, index) => (
 
-          <div className="resource-card" key={index}>
+    <Link
+      key={index}
+      to="/ChooseSubject"
+      className="resource-link"
+    >
 
-            <div className="card-icon">
-              {card.icon}
-            </div>
+      <div className="resource-card">
 
-            <h3>{card.title}</h3>
+        <div className="card-icon">
+          {card.icon}
+        </div>
 
-            <p>{card.description}</p>
+        <h3>{card.title}</h3>
 
-            <button>
+        <p>{card.description}</p>
 
-              <ArrowRight size={18} />
+        <button>
+          <ArrowRight size={18} />
+        </button>
 
-            </button>
+      </div>
 
-          </div>
+    </Link>
 
-        ))}
+  ))}
 
-      </section>
+</section>
 
     </main>
   );
