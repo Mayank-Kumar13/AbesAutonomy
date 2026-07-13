@@ -159,10 +159,8 @@ const Navbar = () => {
             Estd. 2025
           </text>
         </svg>
-
         <h2 className="abesname">ABES Autonomy</h2>
       </div>
-
       <div className="nav-right">
         <ul>
           <li><NavLink to="/">Home</NavLink></li>

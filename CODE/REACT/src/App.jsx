@@ -9,6 +9,7 @@ import Footer from './component/footer/Footer';
 import ChooseSubject from './pages/choosesubject/ChooseSubject';
 import Scroll from "./component/Scroll";
 import Subject from './pages/subject/Subject';
+// import Pdfpreview from "./pages/Pdfpreview";
 const App = () => {
   return (
     <>
@@ -21,6 +22,7 @@ const App = () => {
         <Route path="/amcat" element={<Amcat />} />
         <Route path="/Choosesubject" element={<ChooseSubject />} />
         <Route path="/Subject" element={<Subject />} />
+        {/* <Route path="/" element={<Pdfpreview />} /> */}
       </Routes>
       <Footer />
     </>
