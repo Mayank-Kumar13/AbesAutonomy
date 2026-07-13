@@ -10,7 +10,7 @@ import {
   Notebook,
   Info
 } from "lucide-react";
-
+import { Link } from "react-router-dom";
 
 
 const Resources = () => {
@@ -107,6 +107,7 @@ const Resources = () => {
       const Icon = card.icon;
 
       return (
+        <Link to="/ChooseSubject" style={{ textDecoration: 'none', color: 'inherit' }} key={card.id}>
         <div className="resource-card" key={card.id}>
 
           <div className="resource-icon">
@@ -123,6 +124,7 @@ const Resources = () => {
           </button>
 
         </div>
+        </Link>
       );
 
     })}
