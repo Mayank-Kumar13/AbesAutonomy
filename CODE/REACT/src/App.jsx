@@ -13,7 +13,7 @@ const App = () => {
       <Navbar />
       
       {/* This wrapper automatically limits the width and centers everything below the Navbar */}
-      <div className="w-full flex-grow flex flex-col">
+      <div className="w-full grow flex flex-col">
         <Routes>
           <Route path="/" element={<HomeContent />} />
           <Route path="/credits" element={<Credits />} />
@@ -23,19 +23,5 @@ const App = () => {
 
     
   );
-
-import Resources from './pages/Resources';
-const App = () => {
-  return (
-    <>
-    <Navbar />
-    <Routes>
-         <Route path="/resources" element={<Resources/>} />
-        <Route path="/credits" element={<Credits />} />
-      </Routes>
-    </>
-  )
-
-}
-
+};
 export default App;

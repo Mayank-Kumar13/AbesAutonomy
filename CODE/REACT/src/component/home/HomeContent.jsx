@@ -1,5 +1,5 @@
 import React from 'react';
-import buildingPhoto from '../../../../IMAGES/BUILDING.png';
+import buildingPhoto from '../../../IMAGES/BUILDING.png';
 import { 
   Search, ClipboardList, FlaskConical, Copy, BookOpen, ArrowRight, Star
 } from 'lucide-react';
@@ -16,7 +16,7 @@ const HomeContent = () => {
     <div className="w-full flex flex-col items-center bg-[#080b0e] text-gray-300 font-sans pb-20">
       
       {/* MASTER CONTAINER - Increased gap from 16 to 24 for more flow */}
-      <div className="w-full max-w-[1150px] px-6 flex flex-col gap-24">
+      <div className="w-full max-w-[287.5] px-6 flex flex-col gap-24">
         
         {/* 1. SEARCH SECTION - CLEANED UP */}
         <section className="w-full flex flex-col items-center pt-16">
