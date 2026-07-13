@@ -5,6 +5,7 @@ import HomeContent from './component/home/HomeContent';
 import { Routes, Route } from "react-router-dom";
 import Resources from './pages/Resources';
 import Amcat from './pages/Amcat';
+import Footer from './component/footer/Footer';
 const App = () => {
   return (
     <>
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/credits" element={<Credits />} />
         <Route path="/amcat" element={<Amcat />} />
       </Routes>
+      <Footer />
     </>
   )
 }
