@@ -3,7 +3,7 @@ import React from 'react'
 const Amcat = () => {
   return (
     <div>
-      <h1>COMING SOON...</h1>
+      <img src="/AMCAT_SOON.jpeg" alt="Amcat" />
     </div>
   )
 }

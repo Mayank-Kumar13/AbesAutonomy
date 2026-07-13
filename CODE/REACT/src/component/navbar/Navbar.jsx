@@ -1,7 +1,8 @@
 import React from "react";
 import "./Navbar.css";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi2";
+
 const Navbar = () => {
   const isLoggedIn = true;
 
@@ -161,12 +162,13 @@ const Navbar = () => {
 
         <h2 className="abesname">ABES Autonomy</h2>
       </div>
+
       <div className="nav-right">
         <ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/resources">Resources</Link></li>
-        <li><Link to="/amcat">AMCAT</Link></li>
-        <li><Link to="/credits">Credits</Link></li>
+          <li><NavLink to="/">Home</NavLink></li>
+          <li><NavLink to="/resources">Resources</NavLink></li>
+          <li><NavLink to="/amcat">AMCAT</NavLink></li>
+          <li><NavLink to="/credits">Credits</NavLink></li>
         </ul>
 
         {isLoggedIn ? (
