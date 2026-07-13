@@ -8,6 +8,7 @@ import Amcat from './pages/Amcat';
 import Footer from './component/footer/Footer';
 import ChooseSubject from './pages/choosesubject/ChooseSubject';
 import Scroll from "./component/Scroll";
+import Subject from './pages/subject/Subject';
 const App = () => {
   return (
     <>
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/credits" element={<Credits />} />
         <Route path="/amcat" element={<Amcat />} />
         <Route path="/Choosesubject" element={<ChooseSubject />} />
+        <Route path="/Subject" element={<Subject />} />
       </Routes>
       <Footer />
     </>

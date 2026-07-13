@@ -113,11 +113,8 @@ const Resources = () => {
           <div className="resource-icon">
             <Icon size={42} strokeWidth={1.5} />
           </div>
-
           <h2>{card.title}</h2>
-
           <p>{card.description}</p>
-
           <button className="explore-button">
             Explore
             <span>→</span>

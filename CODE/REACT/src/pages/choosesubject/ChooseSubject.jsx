@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './ChooseSubject.css';
 import Unicard from "../../component/universal_card/Unicard";
+import {Link} from 'react-router-dom';
 import { 
   LineChart, 
   BrainCircuit, 
@@ -107,6 +108,7 @@ const ChooseSubject = () => {
         {/* The Grid mapping your teammate's Unicard */}
         <div className="subject-grid">
           {subjects.map((subject, index) => (
+            <Link to="/Subject" style={{ textDecoration: 'none', color: 'inherit' }} key={index}>
             <Unicard 
               key={index}
               heading={subject.heading}
@@ -118,6 +120,7 @@ const ChooseSubject = () => {
                 </div>
               }
             />
+            </Link>
           ))}
         </div>
 
