@@ -1,0 +1,113 @@
+.choose-subject-wrapper {
+  background-color: #0a0c10;
+  min-height: 100vh;
+  padding: 4rem 1.5rem;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #ffffff;
+}
+
+.choose-subject-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* --- Header Section --- */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4rem;
+  position: relative;
+}
+
+.title-container {
+  text-align: center;
+  flex: 1;
+}
+
+.page-title {
+  font-family: Georgia, serif;
+  font-size: 3rem;
+  font-weight: normal;
+  letter-spacing: 0.05em;
+  margin: 0 0 1rem 0;
+}
+
+.page-subtitle {
+  color: #9ca3af;
+  font-size: 1rem;
+  max-width: 450px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* --- Semester Toggle --- */
+.semester-container {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.semester-label {
+  color: #9ca3af;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.semester-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.sem-btn {
+  background: transparent;
+  border: 1px solid #1f2937;
+  color: #9ca3af;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Changed hover color to match your teammate's #c89b63 gold */
+.sem-btn.active, .sem-btn:hover {
+  border-color: #c89b63;
+  color: #c89b63;
+}
+
+/* --- Subject Grid --- */
+.subject-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  justify-items: center; /* Centers the 250px Unicards in their columns */
+}
+
+/* Make it responsive */
+@media (max-width: 900px) {
+  .subject-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .header-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+  .semester-container {
+    position: static;
+    align-items: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .subject-grid {
+    grid-template-columns: 1fr;
+  }
+}
