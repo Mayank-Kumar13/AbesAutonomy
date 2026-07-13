@@ -11,6 +11,8 @@
     align-items:center;
     background:#0d1117;
     padding:18px 60px;
+    position:sticky;
+    top:0;
 }
 
 .logo-section{
@@ -39,14 +41,42 @@ ul{
 }
 
 ul li a{
+    position:relative;
+    display:inline-block;
     color:white;
     text-decoration:none;
     font-size:17px;
+    padding:10px 0;
     transition:.3s;
 }
 
 ul li a:hover{
     color:#d4a373;
+}
+
+ul li a::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:-14px;
+    transform:translateX(-50%);
+    width:0;
+    height:3px;
+    background:#d4a373;
+    border-radius:50px;
+    transition:.3s;
+}
+
+ul li a:hover::after{
+    width:42px;
+}
+
+ul li a.active{
+    color:white;
+}
+
+ul li a.active::after{
+    width:42px;
 }
 
 .sign-in{
