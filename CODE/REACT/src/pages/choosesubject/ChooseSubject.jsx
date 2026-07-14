@@ -54,10 +54,12 @@ const ChooseSubject = () => {
         </div>
         <div className="subject-grid">
           {displayedSubjects.map((subject, index) => (
-            <Unicard 
-              key={index} heading={subject.heading} para={subject.para} icon={subject.icon}
-              btnn={<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>Explore <ArrowRight size={16} /></div>}
-            />
+            <Link to="/subject" style={{ textDecoration: 'none', color: 'inherit' }} key={index}>
+              <Unicard 
+                key={index} heading={subject.heading} para={subject.para} icon={subject.icon}
+                btnn={<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>Explore <ArrowRight size={16} /></div>}
+              />
+            </Link>
           ))}
         </div>
       </div>
