@@ -261,3 +261,14 @@
 .resource-link .card-icon{
     color:#d4a373;
 }
+.review-section{
+    margin-top:50px;
+    text-align:center;
+    height: 800px;
+}
+.review-section img{
+    width:100%;
+    height:100%;
+    object-fit:fill;
+    border-radius:18px;
+}

@@ -8,6 +8,7 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
+      <Link to="/" className="logo-link" style={{ textDecoration: 'none', color: 'inherit' }}>
       <div className="logo-section">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -161,6 +162,7 @@ const Navbar = () => {
         </svg>
         <h2 className="abesname">ABES Autonomy</h2>
       </div>
+      </Link>
       <div className="nav-right">
         <ul>
           <li><NavLink to="/">Home</NavLink></li>

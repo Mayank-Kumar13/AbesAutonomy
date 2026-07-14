@@ -129,8 +129,10 @@ const HomeContent = () => {
   ))}
 
 </section>
-
-    </main>
+    <div className="review-section">
+      <img src="/REVIEW_FINAL.png" alt="ABES Building" />
+    </div>
+  </main>
   );
 };
 

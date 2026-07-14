@@ -2,7 +2,7 @@ import React from "react";
 import "./Subject.css";
 import { useLocation } from "react-router-dom";
 import { FileText, Download } from "lucide-react";
-
+import { Link } from "react-router-dom";
 const Subject = () => {
   const location = useLocation();
 
@@ -55,15 +55,13 @@ const Subject = () => {
           <span>DOWNLOAD ALL</span>
         </button>
 
-    
+        <Link to="/pdfpreview" className="preview-link" style={{ textDecoration: "none", color: "inherit" }}>
         <div className="units-grid">
           {units.map((unit) => (
             <div className="unit-card" key={unit.id}>
-
               <FileText className="file-icon" />
-
               <h2>{unit.title}</h2>
-
+              
               <button className="unit-download-btn">
                 <span>Preview</span>
               </button>
@@ -71,6 +69,7 @@ const Subject = () => {
             </div>
           ))}
         </div>
+        </Link>
 
       </div>
     </main>
