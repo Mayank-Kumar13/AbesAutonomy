@@ -1,5 +1,6 @@
 import React from 'react';
-import './Footer.css'; // Make sure this matches your CSS file name
+import { Link } from 'react-router-dom'; // <-- The magic React Router link
+import './Footer.css'; 
 import { Camera, Play, Code, Briefcase } from 'lucide-react';
 
 const Footer = () => {
@@ -34,9 +35,9 @@ const Footer = () => {
           <div className="link-column">
             <h3 className="link-heading">Platform</h3>
             <ul className="link-list">
-              <li><a href="#">About</a></li>
-              <li><a href="#">Contact</a></li>
-              <li><a href="#">Contribute</a></li>
+              <li><Link to="/about">About</Link></li>
+              <li><Link to="/contact">Contact</Link></li>
+              <li><Link to="/contribute">Contribute</Link></li>
             </ul>
           </div>
 
@@ -44,8 +45,8 @@ const Footer = () => {
           <div className="link-column">
             <h3 className="link-heading">Legal</h3>
             <ul className="link-list">
-              <li><a href="#">Privacy Policy</a></li>
-              <li><a href="#">Terms & Conditions</a></li>
+              <li><Link to="/privacy">Privacy Policy</Link></li>
+              <li><Link to="/terms">Terms & Conditions</Link></li>
             </ul>
           </div>
           
@@ -56,7 +57,7 @@ const Footer = () => {
       <div className="footer-container">
         <div className="footer-bottom">
           <p className="copyright">
-            © 2024 ABES Autonomy. All rights reserved.
+            © 2026 ABES Autonomy. All rights reserved.
           </p>
         </div>
       </div>
