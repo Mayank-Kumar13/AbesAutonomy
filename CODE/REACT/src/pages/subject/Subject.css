@@ -36,45 +36,38 @@
   line-height: 1.8;
 }
 
-
 .download-all {
   display: inline-flex;
   align-items: center;
   gap: 12px;
 
   margin-bottom: 35px;
-  padding: 8px 4px;
+  padding: 12px 18px;
 
   background: transparent;
-  border: none;
-  outline: none;
 
-  color: #e7ad56;
-  
+  /* Permanent golden border */
+  border: 1px solid #b8863f;
+  border-radius: 8px;
 
-  font-family: system-ui, -apple-system, sans-serif;
+  color: #e9a844;
+
   font-size: 17px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.03em;
 
   cursor: pointer;
-
   transition: all 0.25s ease;
 }
 
 .download-all svg {
-  width: 22px;
-  height: 22px;
-  stroke-width: 1.8;
+  color: #e9a844;
 }
 
 .download-all:hover {
-  color: #e38f10;
+  border-color: #e9a844;
+  background: rgba(233, 168, 68, 0.06);
   transform: translateY(-2px);
-}
-
-.download-all:active {
-  transform: translateY(0);
 }
 
 
