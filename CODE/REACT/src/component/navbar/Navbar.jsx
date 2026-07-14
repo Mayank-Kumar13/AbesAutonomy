@@ -2,7 +2,7 @@ import React from "react";
 import "./Navbar.css";
 import { NavLink } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi2";
-
+import { Link } from "react-router-dom";
 const Navbar = () => {
   const isLoggedIn = true;
 
@@ -171,10 +171,14 @@ const Navbar = () => {
 
         {isLoggedIn ? (
           <div className="profile">
+            <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
             <HiOutlineUserCircle />
+            </Link>
           </div>
         ) : (
+          <Link to="/login" style={{ textDecoration: 'none', color: 'inherit' }}>
           <div className="sign-in">Sign In</div>
+          </Link>
         )}
       </div>
     </nav>

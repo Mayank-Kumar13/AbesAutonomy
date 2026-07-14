@@ -11,6 +11,8 @@ import Scroll from "./component/Scroll";
 import Subject from './pages/subject/Subject';
 import Pdfpreview from "./pages/Pdfpreview";
 import { useLocation } from "react-router-dom";
+import LoginPage from './pages/loginPage/LoginPage';
+import Profile from './pages/profile/Profile';
 const App = () => {
   return (
     <>
@@ -25,6 +27,8 @@ const App = () => {
         <Route path="/Choosesubject" element={<ChooseSubject />} />
         <Route path="/Subject" element={<Subject />} />
         <Route path="/amcat" element={<Pdfpreview />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       <Footer />
     </>
