@@ -7,5 +7,4 @@ const Subject = () => {
     </div>
   )
 }
-
 export default Subject

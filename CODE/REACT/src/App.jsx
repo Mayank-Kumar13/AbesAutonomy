@@ -4,25 +4,27 @@ import Credits from './pages/Credits';
 import HomeContent from './component/home/HomeContent';
 import { Routes, Route } from "react-router-dom";
 import Resources from './pages/Resources';
-import Amcat from './pages/Amcat';
+// import Amcat from './pages/Amcat';
 import Footer from './component/footer/Footer';
 import ChooseSubject from './pages/choosesubject/ChooseSubject';
 import Scroll from "./component/Scroll";
 import Subject from './pages/subject/Subject';
-// import Pdfpreview from "./pages/Pdfpreview";
+import Pdfpreview from "./pages/Pdfpreview";
+import { useLocation } from "react-router-dom";
 const App = () => {
   return (
     <>
-    <Navbar />
+    
+    {useLocation().pathname === "/Subject" && <Navbar />} 
     <Scroll />
     <Routes>
         <Route path="/" element={<HomeContent />} />
          <Route path="/resources" element={<Resources/>} />
         <Route path="/credits" element={<Credits />} />
-        <Route path="/amcat" element={<Amcat />} />
+        {/* <Route path="/amcat" element={<Amcat />} /> */}
         <Route path="/Choosesubject" element={<ChooseSubject />} />
         <Route path="/Subject" element={<Subject />} />
-        {/* <Route path="/" element={<Pdfpreview />} /> */}
+        <Route path="/amcat" element={<Pdfpreview />} />
       </Routes>
       <Footer />
     </>
