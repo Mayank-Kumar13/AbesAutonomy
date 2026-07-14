@@ -15,7 +15,7 @@ const App = () => {
   return (
     <>
     
-    {useLocation().pathname === "/Subject" && <Navbar />} 
+    {useLocation().pathname !== "/amcat" && <Navbar />} 
     <Scroll />
     <Routes>
         <Route path="/" element={<HomeContent />} />
