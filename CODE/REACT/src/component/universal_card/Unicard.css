@@ -6,6 +6,12 @@
     padding:30px 20px;
     text-align:center;
 }
+.card:hover{
+    border:1px solid #c89b63;
+    box-shadow:0 12px 30px rgba(0,0,0,0.35), 0 0 20px rgba(217,162,79,0.05);
+    transform:translateY(-6px);
+    transition: all 0.3s ease;
+}
 
 .logo{
     width:75px;
@@ -43,4 +49,9 @@
     cursor:pointer;
     height:auto;
     width:auto;
+}
+.btnn:hover{
+    background:#c89b63;
+    color:#0d1117;
+    transition: all 0.3s ease;
 }
