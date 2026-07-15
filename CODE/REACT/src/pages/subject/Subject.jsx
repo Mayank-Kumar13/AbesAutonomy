@@ -38,7 +38,7 @@ const Subject = () => {
     <main className="subject-page">
       <div className="subject-container">
 
-    
+
         <div className="subject-heading">
           <h1>{heading}</h1>
 
@@ -49,13 +49,14 @@ const Subject = () => {
           </p>
         </div>
 
-    
+
         <button className="download-all">
           <Download size={22} />
           <span>DOWNLOAD ALL</span>
         </button>
 
         <Link to="/pdfpreview" className="preview-link" style={{ textDecoration: "none", color: "inherit" }}>
+
         <div className="units-grid">
           {units.map((unit) => (
             <div className="unit-card" key={unit.id}>
