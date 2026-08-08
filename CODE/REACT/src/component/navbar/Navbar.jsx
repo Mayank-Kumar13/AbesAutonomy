@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { isLoggedIn } from "../../services/api";
 
 const Navbar = () => {
+<<<<<<< HEAD
   const [loggedIn, setLoggedIn] = useState(isLoggedIn());
 
   // Re-check auth status when localStorage changes (e.g., after login/logout in another tab)
@@ -25,6 +26,9 @@ const Navbar = () => {
       clearInterval(interval);
     };
   }, []);
+=======
+  const isLoggedIn = false;
+>>>>>>> ee4b97796b7421215de4df40c47534d96b07f987
 
   return (
     <nav className="navbar">

@@ -14,6 +14,7 @@
     position:sticky;
     top:0;
     z-index:100;
+    
 }
 
 .logo-section{
@@ -27,6 +28,7 @@
     color:white;
     font-size:40px;
     font-weight:bold;
+     font-family: "montserrat";
 }
 
 .nav-right{

@@ -160,7 +160,7 @@ const Resources = () => {
         )}
       </section>
 
-      <div className="year-selector">
+      {/* <div className="year-selector">
 
   <span className="year-label">
     YEAR
@@ -178,7 +178,7 @@ const Resources = () => {
     </button>
   ))}
 
-</div>
+</div> */}
 <section className="resources-section">
 
   <div className="resources-grid">
