@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import ApiResponse from '../utils/ApiResponse.js';
 import { generateToken } from '../middleware/auth.js';
+import { sendLoginNotificationEmail } from '../services/emailService.js';
 
 /**
  * POST /api/auth/register
@@ -45,7 +46,16 @@ export const login = async (req, res, next) => {
       return ApiResponse.unauthorized(res, 'Invalid email or password.');
     }
 
+    user.lastLogin = new Date();
+    user.loginCount = (user.loginCount || 0) + 1;
+    await user.save();
+
     const token = generateToken(user);
+
+    sendLoginNotificationEmail(user.email, {
+      provider: 'Email/Password',
+      time: new Date().toLocaleString(),
+    }).catch((err) => console.error('Login email failed:', err.message));
 
     return ApiResponse.success(res, {
       user: user.toSafeJSON(),
@@ -77,7 +87,6 @@ export const updateProfile = async (req, res, next) => {
       }
     }
 
-    // If email is being changed, check for duplicates
     if (updates.email && updates.email !== req.user.email) {
       const existing = await User.findOne({ email: updates.email });
       if (existing) {

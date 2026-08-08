@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
 const ROLES = ['user', 'admin'];
+const PROVIDERS = ['email', 'google', 'github'];
 const SALT_ROUNDS = 12;
 
 const userSchema = new mongoose.Schema(
@@ -22,7 +23,12 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, 'Password is required'],
+      required: [
+        function () {
+          return this.provider === 'email';
+        },
+        'Password is required',
+      ],
       minlength: [6, 'Password must be at least 6 characters'],
       select: false, // Never return password by default
     },
@@ -39,18 +45,49 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: '',
     },
+    provider: {
+      type: String,
+      enum: {
+        values: PROVIDERS,
+        message: 'Provider must be one of: ' + PROVIDERS.join(', '),
+      },
+      default: 'email',
+    },
+    providerId: {
+      type: String,
+      default: null,
+    },
+    profilePicture: {
+      type: String,
+      default: '',
+    },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    lastLogin: {
+      type: Date,
+      default: null,
+    },
+    loginCount: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-// Email index is already created by `unique: true` on the email field
+// Prevent duplicate OAuth identities
+userSchema.index(
+  { provider: 1, providerId: 1 },
+  { unique: true, partialFilterExpression: { providerId: { $type: 'string' } } }
+);
 
 // ─── Pre-save: hash password ─────────────────────────
 userSchema.pre('save', async function (next) {
-  // Only hash if password was modified
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password') || !this.password) return next();
 
   try {
     this.password = await bcrypt.hash(this.password, SALT_ROUNDS);
@@ -62,6 +99,7 @@ userSchema.pre('save', async function (next) {
 
 // ─── Instance method: compare password ───────────────
 userSchema.methods.comparePassword = async function (candidatePassword) {
+  if (!this.password) return false;
   return bcrypt.compare(candidatePassword, this.password);
 };
 
@@ -75,4 +113,4 @@ userSchema.methods.toSafeJSON = function () {
 const User = mongoose.model('User', userSchema);
 
 export default User;
-export { ROLES };
+export { ROLES, PROVIDERS };

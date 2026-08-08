@@ -1,30 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./Navbar.css";
 import { NavLink } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi2";
-import { Link } from "react-router-dom";
-import { isLoggedIn } from "../../services/api";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../auth/AuthContext";
 
 const Navbar = () => {
-  const [loggedIn, setLoggedIn] = useState(isLoggedIn());
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
-  // Re-check auth status when localStorage changes (e.g., after login/logout in another tab)
   useEffect(() => {
-    const handleStorageChange = () => {
-      setLoggedIn(isLoggedIn());
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
     };
-    window.addEventListener("storage", handleStorageChange);
-
-    // Also check periodically for same-tab changes
-    const interval = setInterval(() => {
-      setLoggedIn(isLoggedIn());
-    }, 1000);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      clearInterval(interval);
-    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    setMenuOpen(false);
+    navigate("/");
+  };
 
   return (
     <nav className="navbar">
@@ -191,11 +192,53 @@ const Navbar = () => {
           <li><NavLink to="/credits">Credits</NavLink></li>
         </ul>
 
-        {loggedIn ? (
-          <div className="profile">
-            <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
-            <HiOutlineUserCircle />
-            </Link>
+        {isAuthenticated ? (
+          <div className="profile" ref={menuRef} style={{ position: "relative" }}>
+            <div
+              onClick={() => setMenuOpen((o) => !o)}
+              style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}
+            >
+              {user?.profilePicture ? (
+                <img
+                  src={user.profilePicture}
+                  alt="avatar"
+                  referrerPolicy="no-referrer"
+                  style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+                />
+              ) : (
+                <HiOutlineUserCircle size={28} />
+              )}
+              <span style={{ fontSize: "15px", fontFamily: "inherit", color: "#C5AC86" }}>{user?.name}</span>
+            </div>
+
+            {menuOpen && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "36px",
+                  right: 0,
+                  background: "#111215",
+                  border: "1px solid #C5AC86",
+                  borderRadius: "6px",
+                  minWidth: "150px",
+                  zIndex: 10,
+                }}
+              >
+                <Link
+                  to="/profile"
+                  onClick={() => setMenuOpen(false)}
+                  style={{ display: "block", padding: "10px 14px", textDecoration: "none", color: "#C5AC86", fontSize: "14px", fontFamily: "inherit" }}
+                >
+                  My Profile
+                </Link>
+                <div
+                  onClick={handleLogout}
+                  style={{ padding: "10px 14px", cursor: "pointer", color: "#C5AC86", fontSize: "14px", fontFamily: "inherit" }}
+                >
+                  Logout
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <Link to="/login" style={{ textDecoration: 'none', color: 'inherit' }}>

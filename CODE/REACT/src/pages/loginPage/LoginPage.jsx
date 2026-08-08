@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
-import './LoginPage.css'; 
-import { Eye, EyeOff, Loader2 } from 'lucide-react'; 
-import { useNavigate } from 'react-router-dom';
-import { authApi } from '../../services/api';
+import { useNavigate, useLocation } from 'react-router-dom';
+import './LoginPage.css';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { useAuth } from '../../auth/AuthContext';
+import { authApi } from '../../auth/authApi';
 
-function LoginPage() {
+function App() {
   const [activeTab, setActiveTab] = useState('login');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const { login, register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = location.state?.from?.pathname || '/';
 
   const [formData, setFormData] = useState({
     name: '',
-    username: '',
+    email: '',
     password: ''
   });
 
@@ -23,37 +28,32 @@ function LoginPage() {
       ...prev,
       [name]: value
     }));
-    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
-
+    setIsLoading(true);
     try {
       if (activeTab === 'login') {
-        await authApi.login(formData.username, formData.password);
+        await login(formData.email, formData.password);
       } else {
-        if (!formData.name.trim()) {
-          setError('Name is required for sign up.');
-          setIsLoading(false);
-          return;
-        }
-        await authApi.register(formData.name, formData.username, formData.password);
+        await register(formData.name, formData.email, formData.password);
       }
-      // Redirect to home on success
-      navigate('/');
+      navigate(redirectTo, { replace: true });
     } catch (err) {
-      setError(err.data?.message || err.message || 'Something went wrong.');
+      setError(err.message);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleGoogleLogin = () => {
-    console.log("Redirecting to Google Auth...");
-    // Future: trigger the Google OAuth flow
+    window.location.href = authApi.googleLoginUrl();
+  };
+
+  const handleGithubLogin = () => {
+    window.location.href = authApi.githubLoginUrl();
   };
 
   return (
@@ -66,34 +66,28 @@ function LoginPage() {
           <div className="tabs">
             <button
               className={`tab-btn ${activeTab === 'login' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('login'); setError(''); }}
+              onClick={() => setActiveTab('login')}
             >
               LOG IN
             </button>
             <button
               className={`tab-btn ${activeTab === 'signup' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('signup'); setError(''); }}
+              onClick={() => setActiveTab('signup')}
             >
               SIGN UP
             </button>
           </div>
 
-          {error && (
-            <p style={{ color: '#e57373', fontSize: '14px', textAlign: 'center', margin: '10px 0' }}>
-              {error}
-            </p>
-          )}
-
           <form className="auth-form" onSubmit={handleSubmit}>
             {activeTab === 'signup' && (
               <div className="input-group">
-                <label>Full Name</label>
-                <input 
-                  type="text" 
+                <label>Name</label>
+                <input
+                  type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  required={activeTab === 'signup'}
+                  required
                 />
               </div>
             )}
@@ -102,8 +96,8 @@ function LoginPage() {
               <label>Email</label>
               <input 
                 type="email" 
-                name="username"
-                value={formData.username}
+                name="email"
+                value={formData.email}
                 onChange={handleInputChange}
                 required
               />
@@ -130,6 +124,8 @@ function LoginPage() {
               </div>
             </div>
 
+            {error && <p style={{ color: 'red', fontSize: '0.9rem' }}>{error}</p>}
+
             <button type="submit" className="submit-btn" disabled={isLoading}>
               {isLoading ? (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
@@ -141,11 +137,9 @@ function LoginPage() {
             </button>
           </form>
 
-          {/* --- GOOGLE LOGIN SECTION --- */}
           <div className="divider">or</div>
           
           <button type="button" className="google-btn" onClick={handleGoogleLogin}>
-            {/* Standard Google G Logo SVG */}
             <svg className="google-icon" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -155,11 +149,17 @@ function LoginPage() {
             </svg>
             Continue with Google
           </button>
-          {/* --------------------------------- */}
+
+          <button type="button" className="google-btn" onClick={handleGithubLogin} style={{ marginTop: '10px' }}>
+            <svg className="google-icon" viewBox="0 0 24 24" fill="#ffffff">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.06-.02-2.08-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.08 1.84 2.83 1.31 3.52 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22 0 1.6-.02 2.89-.02 3.29 0 .32.22.7.83.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            Continue with GitHub
+          </button>
 
           {activeTab === 'login' && (
             <div className="modal-footer">
-              <a href="#" className="forgot-link">Forgot Password?</a>
+              <a href="/forgot-password" className="forgot-link">Forgot Password?</a>
               <p className="create-account">
                 Don't have an account? <span onClick={() => setActiveTab('signup')}>[Create One]</span>
               </p>
@@ -172,4 +172,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default App;

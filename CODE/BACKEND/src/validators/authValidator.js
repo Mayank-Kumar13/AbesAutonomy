@@ -31,7 +31,7 @@ export const updateProfileValidation = [
     .trim()
     .isLength({ max: 100 }).withMessage('Name cannot exceed 100 characters'),
   body('mobile')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .matches(/^[0-9]{10}$/).withMessage('Mobile must be a 10-digit number'),
   body('email')

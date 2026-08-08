@@ -18,6 +18,11 @@ import About from './pages/InfoPage/About';
 import Terms from './pages/InfoPage/Terms';
 import Contact from './pages/InfoPage/Contact';
 import Contribute from './pages/InfoPage/Contribute';
+import ForgotPassword from './pages/forgotPassword/ForgotPassword';
+import ResetPassword from './pages/forgotPassword/ResetPassword';
+import OAuthCallback from './pages/oauth/OAuthCallback';
+import ProtectedRoute from './auth/ProtectedRoute';
+
 const App = () => {
   return (
     <>
@@ -26,14 +31,17 @@ const App = () => {
     <Scroll />
     <Routes>
         <Route path="/" element={<HomeContent />} />
-         <Route path="/resources" element={<Resources/>} />
+        <Route path="/resources" element={<ProtectedRoute><Resources/></ProtectedRoute>} />
         <Route path="/credits" element={<Credits />} />
         <Route path="/amcat" element={<Amcat />} />
-        <Route path="/Choosesubject" element={<ChooseSubject />} />
-        <Route path="/Subject" element={<Subject />} />
-        <Route path="/pdfpreview" element={<Pdfpreview />} />
+        <Route path="/Choosesubject" element={<ProtectedRoute><ChooseSubject /></ProtectedRoute>} />
+        <Route path="/Subject" element={<ProtectedRoute><Subject /></ProtectedRoute>} />
+        <Route path="/pdfpreview" element={<ProtectedRoute><Pdfpreview /></ProtectedRoute>} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/auth/callback" element={<OAuthCallback />} />
         <Route path="/about" element={<About/>}/>
         {/* <Route path="/privacy" element={<PrivacyPolicy />} /> */}
         <Route path="/terms" element={<Terms />} />

@@ -1,89 +1,54 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./Profile.css";
 import { FiEdit2, FiMail } from "react-icons/fi";
-import { authApi, isLoggedIn, clearAuth } from "../../services/api";
+import { useAuth } from "../../auth/AuthContext";
 
 export default function Profile() {
-  const navigate = useNavigate();
+  const { user, updateProfile } = useAuth();
+
   const [student, setStudent] = useState({
     name: "",
     email: "",
     mobile: "",
   });
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (!isLoggedIn()) {
-      navigate("/login");
-      return;
+    if (user) {
+      setStudent({
+        name: user.name || "",
+        email: user.email || "",
+        mobile: user.mobile || "",
+      });
     }
-
-    const fetchProfile = async () => {
-      try {
-        const result = await authApi.getProfile();
-        if (result.data) {
-          setStudent({
-            name: result.data.name || "",
-            email: result.data.email || "",
-            mobile: result.data.mobile || "",
-          });
-        }
-      } catch (err) {
-        console.error("Failed to fetch profile:", err);
-        if (err.status === 401) {
-          clearAuth();
-          navigate("/login");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [navigate]);
+  }, [user]);
 
   const handleChange = (e) => {
     setStudent({
       ...student,
       [e.target.name]: e.target.value,
     });
-    setMessage("");
   };
 
   const handleSave = async () => {
     setSaving(true);
     setMessage("");
     try {
-      const result = await authApi.updateProfile(student);
-      if (result.data) {
-        setStudent({
-          name: result.data.name || "",
-          email: result.data.email || "",
-          mobile: result.data.mobile || "",
-        });
-      }
-      setMessage("Profile updated successfully!");
+      await updateProfile({
+        name: student.name,
+        mobile: student.mobile,
+      });
+      setMessage("Profile updated successfully");
     } catch (err) {
-      setMessage(err.data?.message || "Failed to update profile.");
+      setMessage(err.message);
     } finally {
       setSaving(false);
     }
   };
 
-  const handleLogout = () => {
-    authApi.logout();
-    navigate("/");
-  };
-
-  if (loading) {
-    return (
-      <div className="profile-page">
-        <p style={{ color: "#888", textAlign: "center", paddingTop: "80px" }}>Loading profile...</p>
-      </div>
-    );
+  if (!user) {
+    return <div className="profile-page">Loading...</div>;
   }
 
   return (
@@ -98,14 +63,18 @@ export default function Profile() {
 
         <div className="profile-header">
           <div className="profile-left">
-            <div className="avatar">
-              {student.name
-                ? student.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                : "?"}
-            </div>
+            {user.profilePicture ? (
+              <img src={user.profilePicture} alt="avatar" className="avatar" style={{ objectFit: "cover" }} />
+            ) : (
+              <div className="avatar">
+                {student.name
+                  ? student.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                  : "?"}
+              </div>
+            )}
 
             <div>
               <h2>{student.name}</h2>
@@ -119,17 +88,6 @@ export default function Profile() {
         </div>
 
         <hr />
-
-        {message && (
-          <p style={{
-            color: message.includes("success") ? "#66bb6a" : "#e57373",
-            fontSize: "14px",
-            textAlign: "center",
-            margin: "10px 0",
-          }}>
-            {message}
-          </p>
-        )}
 
         <div className="field">
           <div className="label">
@@ -157,9 +115,8 @@ export default function Profile() {
               type="email"
               name="email"
               value={student.email}
-              onChange={handleChange}
+              disabled
             />
-            <FiEdit2 />
           </div>
         </div>
 
@@ -179,8 +136,38 @@ export default function Profile() {
           </div>
         </div>
 
+        <div className="field">
+          <div className="label">
+            <h4>Sign-in Provider</h4>
+          </div>
+          <p>{user.provider}</p>
+        </div>
+
+        <div className="field">
+          <div className="label">
+            <h4>Account Created</h4>
+          </div>
+          <p>{new Date(user.createdAt).toLocaleDateString()}</p>
+        </div>
+
+        <div className="field">
+          <div className="label">
+            <h4>Last Login</h4>
+          </div>
+          <p>{user.lastLogin ? new Date(user.lastLogin).toLocaleString() : "—"}</p>
+        </div>
+
+        <div className="field">
+          <div className="label">
+            <h4>Login Count</h4>
+          </div>
+          <p>{user.loginCount}</p>
+        </div>
+
+        {message && <p style={{ color: message.includes("success") ? "green" : "red" }}>{message}</p>}
+
         <div className="buttons">
-          <button className="cancel" onClick={handleLogout}>Logout</button>
+          <button className="cancel">Cancel</button>
           <button className="save" onClick={handleSave} disabled={saving}>
             {saving ? "Saving..." : "Save Changes"}
           </button>
