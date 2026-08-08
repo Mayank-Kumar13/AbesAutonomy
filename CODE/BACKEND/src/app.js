@@ -1,0 +1,82 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import env from './config/env.js';
+import { apiLimiter } from './middleware/rateLimiter.js';
+import errorHandler from './middleware/errorHandler.js';
+
+// Route imports
+import noteRoutes from './routes/noteRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
+import metaRoutes from './routes/metaRoutes.js';
+
+const app = express();
+
+// ─── Security middleware ─────────────────────────────
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+}));
+
+app.use(cors({
+  origin: env.FRONTEND_URL,
+  credentials: true,
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+// ─── Body parsing ────────────────────────────────────
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// ─── Custom MongoDB query sanitization ───────────────
+// express-mongo-sanitize is incompatible with Express 5 (req.query is read-only).
+// Custom middleware sanitizes req.body to prevent NoSQL injection.
+const sanitize = (obj) => {
+  if (obj && typeof obj === 'object') {
+    for (const key of Object.keys(obj)) {
+      if (key.startsWith('$') || key.includes('.')) {
+        delete obj[key];
+      } else if (typeof obj[key] === 'object') {
+        sanitize(obj[key]);
+      }
+    }
+  }
+  return obj;
+};
+app.use((req, res, next) => {
+  if (req.body) sanitize(req.body);
+  next();
+});
+
+// ─── Rate limiting ───────────────────────────────────
+app.use('/api', apiLimiter);
+
+// ─── Health check ────────────────────────────────────
+app.get('/api/health', (req, res) => {
+  res.json({
+    success: true,
+    message: 'ABES Autonomy API is running',
+    timestamp: new Date().toISOString(),
+    environment: env.NODE_ENV,
+  });
+});
+
+// ─── API Routes ──────────────────────────────────────
+app.use('/api/notes', noteRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/api/meta', metaRoutes);
+
+// ─── 404 handler ─────────────────────────────────────
+app.use('/api/{*path}', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route not found: ${req.method} ${req.originalUrl}`,
+  });
+});
+
+// ─── Global error handler (must be last) ─────────────
+app.use(errorHandler);
+
+export default app;

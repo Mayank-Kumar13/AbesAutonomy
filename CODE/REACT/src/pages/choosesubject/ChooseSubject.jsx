@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ChooseSubject.css';
 import Unicard from "../../component/universal_card/Unicard";
-import {Link} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import { 
   LineChart, 
   BrainCircuit, 
@@ -12,29 +12,65 @@ import {
   Atom,     // For Physics
   Zap,      // For Electrical
   Cpu,      // For Electronics
-  Leaf      // For EVS
+  Leaf,     // For EVS
+  BookOpen, // Fallback icon
 } from 'lucide-react';
+import { metaApi } from '../../services/api';
+
+// Icon mapping for known subjects
+const SUBJECT_ICONS = {
+  DSA: <LineChart size={35} strokeWidth={1.5} />,
+  MATHS: <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontWeight: 'bold', fontSize: '28px', lineHeight: '1' }}>f(x)</span>,
+  PHYSICS: <Atom size={35} strokeWidth={1.5} />,
+  EVS: <Leaf size={35} strokeWidth={1.5} />,
+  AI: <BrainCircuit size={35} strokeWidth={1.5} />,
+  ELECTRICAL: <Zap size={35} strokeWidth={1.5} />,
+  'SOFT SKILL': <Code size={35} strokeWidth={1.5} />,
+  DT: <Monitor size={35} strokeWidth={1.5} />,
+  MECHANICS: <Cog size={35} strokeWidth={1.5} />,
+  ELECTRONICS: <Cpu size={35} strokeWidth={1.5} />,
+};
+
+// Descriptions for known subjects
+const SUBJECT_DESC = {
+  DSA: "Data Structures and Algorithms",
+  MATHS: "Mathematics for Problem Solving",
+  PHYSICS: "Engineering Physics and Applications",
+  EVS: "Environmental Studies and Sustainability",
+  AI: "Artificial Intelligence Fundamentals",
+  ELECTRICAL: "Basic Electrical Engineering",
+  'SOFT SKILL': "Soft Skills and Personal Development",
+  DT: "Digital Techniques and Logic Design",
+  MECHANICS: "Engineering Mechanics and Dynamics",
+  ELECTRONICS: "Fundamentals of Electronics Engineering",
+};
+
+// Fallback hardcoded subjects per branch
+const FALLBACK_SUBJECTS = {
+  electrical: ['DSA', 'MATHS', 'PHYSICS', 'EVS', 'AI', 'ELECTRICAL'],
+  electronics: ['DSA', 'MATHS', 'SOFT SKILL', 'DT', 'MECHANICS', 'ELECTRONICS'],
+};
 
 const ChooseSubject = () => {
+  const location = useLocation();
+  const { year = 1, resourceType = 'theory', resourceTitle = 'THEORY NOTES' } = location.state || {};
+
   const [activeGroup, setActiveGroup] = useState('electrical');
+  const [subjects, setSubjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const allSubjects = {
-    dsa: { heading: "DSA", para: "Data Structures and Algorithms", icon: <LineChart size={35} strokeWidth={1.5} /> },
-    maths: { heading: "MATHS", para: "Mathematics for Problem Solving", icon: <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontWeight: 'bold', fontSize: '28px', lineHeight: '1' }}>f(x)</span> },
-    physics: { heading: "PHYSICS", para: "Engineering Physics and Applications", icon: <Atom size={35} strokeWidth={1.5} /> },
-    evs: { heading: "EVS", para: "Environmental Studies and Sustainability", icon: <Leaf size={35} strokeWidth={1.5} /> },
-    ai: { heading: "AI", para: "Artificial Intelligence Fundamentals", icon: <BrainCircuit size={35} strokeWidth={1.5} /> },
-    electrical: { heading: "ELECTRICAL", para: "Basic Electrical Engineering", icon: <Zap size={35} strokeWidth={1.5} /> },
-    softSkill: { heading: "SOFT SKILL", para: "Soft Skills and Personal Development", icon: <Code size={35} strokeWidth={1.5} /> },
-    dt: { heading: "DT", para: "Digital Techniques and Logic Design", icon: <Monitor size={35} strokeWidth={1.5} /> },
-    mechanics: { heading: "MECHANICS", para: "Engineering Mechanics and Dynamics", icon: <Cog size={35} strokeWidth={1.5} /> },
-    electronics: { heading: "ELECTRONICS", para: "Fundamentals of Electronics Engineering", icon: <Cpu size={35} strokeWidth={1.5} /> }
-  };
+  // Always use the static subjects configuration as requested by the user.
+  // We do not want to hide subjects just because they lack MongoDB records.
+  useEffect(() => {
+    setSubjects(FALLBACK_SUBJECTS[activeGroup] || []);
+    setLoading(false);
+  }, [activeGroup]);
 
-  const electricalCurriculum = [allSubjects.dsa, allSubjects.maths, allSubjects.physics, allSubjects.evs, allSubjects.ai, allSubjects.electrical];
-  const electronicsCurriculum = [allSubjects.dsa, allSubjects.maths, allSubjects.softSkill, allSubjects.dt, allSubjects.mechanics, allSubjects.electronics];
-
-  const displayedSubjects = activeGroup === 'electrical' ? electricalCurriculum : electronicsCurriculum;
+  const displayedSubjects = subjects.map(subjectName => ({
+    heading: subjectName,
+    para: SUBJECT_DESC[subjectName] || `${subjectName} Study Materials`,
+    icon: SUBJECT_ICONS[subjectName] || <BookOpen size={35} strokeWidth={1.5} />,
+  }));
 
   return (
     <div className="choose-subject-wrapper">
@@ -52,24 +88,38 @@ const ChooseSubject = () => {
             </div>
           </div>
         </div>
-        <div className="subject-grid">
-          {displayedSubjects.map((subject, index) => (
-            <Link
-  to="/subject"
-  state={{
-    heading: subject.heading,
-    para: subject.para
-  }}
-  style={{ textDecoration: 'none', color: 'inherit' }}
-  key={index}
->
-              <Unicard 
-                key={index} heading={subject.heading} para={subject.para} icon={subject.icon}
-                btnn={<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>Explore <ArrowRight size={16} /></div>}
-              />
-            </Link>
-          ))}
-        </div>
+
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '60px 0', color: '#9ca3af' }}>
+            <p>Loading subjects...</p>
+          </div>
+        ) : displayedSubjects.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '60px 0', color: '#9ca3af' }}>
+            <p>No subjects found for this combination.</p>
+          </div>
+        ) : (
+          <div className="subject-grid">
+            {displayedSubjects.map((subject, index) => (
+              <Link
+                to="/subject"
+                state={{
+                  heading: subject.heading,
+                  para: subject.para,
+                  year: year,
+                  resourceType: resourceType,
+                  branch: activeGroup,
+                }}
+                style={{ textDecoration: 'none', color: 'inherit' }}
+                key={index}
+              >
+                <Unicard 
+                  key={index} heading={subject.heading} para={subject.para} icon={subject.icon}
+                  btnn={<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>Explore <ArrowRight size={16} /></div>}
+                />
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

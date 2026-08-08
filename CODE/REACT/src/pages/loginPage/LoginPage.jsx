@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import './LoginPage.css'; 
 import { Eye, EyeOff, Loader2 } from 'lucide-react'; 
+import { useNavigate } from 'react-router-dom';
+import { authApi } from '../../services/api';
 
-function App() {
+function LoginPage() {
   const [activeTab, setActiveTab] = useState('login');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
+    name: '',
     username: '',
     password: ''
   });
@@ -18,21 +23,37 @@ function App() {
       ...prev,
       [name]: value
     }));
+    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulating a network request for the demo
-    setTimeout(() => {
+    setError('');
+
+    try {
+      if (activeTab === 'login') {
+        await authApi.login(formData.username, formData.password);
+      } else {
+        if (!formData.name.trim()) {
+          setError('Name is required for sign up.');
+          setIsLoading(false);
+          return;
+        }
+        await authApi.register(formData.name, formData.username, formData.password);
+      }
+      // Redirect to home on success
+      navigate('/');
+    } catch (err) {
+      setError(err.data?.message || err.message || 'Something went wrong.');
+    } finally {
       setIsLoading(false);
-      console.log("Form Submitted:", formData);
-    }, 1500);
+    }
   };
 
   const handleGoogleLogin = () => {
     console.log("Redirecting to Google Auth...");
-    // Later, this is where you'll trigger the Google OAuth flow!
+    // Future: trigger the Google OAuth flow
   };
 
   return (
@@ -45,23 +66,42 @@ function App() {
           <div className="tabs">
             <button
               className={`tab-btn ${activeTab === 'login' ? 'active' : ''}`}
-              onClick={() => setActiveTab('login')}
+              onClick={() => { setActiveTab('login'); setError(''); }}
             >
               LOG IN
             </button>
             <button
               className={`tab-btn ${activeTab === 'signup' ? 'active' : ''}`}
-              onClick={() => setActiveTab('signup')}
+              onClick={() => { setActiveTab('signup'); setError(''); }}
             >
               SIGN UP
             </button>
           </div>
 
+          {error && (
+            <p style={{ color: '#e57373', fontSize: '14px', textAlign: 'center', margin: '10px 0' }}>
+              {error}
+            </p>
+          )}
+
           <form className="auth-form" onSubmit={handleSubmit}>
+            {activeTab === 'signup' && (
+              <div className="input-group">
+                <label>Full Name</label>
+                <input 
+                  type="text" 
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required={activeTab === 'signup'}
+                />
+              </div>
+            )}
+
             <div className="input-group">
-              <label>Gmail/Github</label>
+              <label>Email</label>
               <input 
-                type="text" 
+                type="email" 
                 name="username"
                 value={formData.username}
                 onChange={handleInputChange}
@@ -78,6 +118,7 @@ function App() {
                   value={formData.password}
                   onChange={handleInputChange}
                   required
+                  minLength={6}
                 />
                 <button
                   type="button"
@@ -100,7 +141,7 @@ function App() {
             </button>
           </form>
 
-          {/* --- NEW GOOGLE LOGIN SECTION --- */}
+          {/* --- GOOGLE LOGIN SECTION --- */}
           <div className="divider">or</div>
           
           <button type="button" className="google-btn" onClick={handleGoogleLogin}>
@@ -131,4 +172,4 @@ function App() {
   );
 }
 
-export default App;
+export default LoginPage;

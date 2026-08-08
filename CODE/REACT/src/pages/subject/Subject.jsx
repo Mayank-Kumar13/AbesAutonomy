@@ -1,44 +1,84 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Subject.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FileText, Download } from "lucide-react";
-import { Link } from "react-router-dom";
+import { notesApi } from "../../services/api";
+
 const Subject = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const { heading, para } = location.state || {
-    heading: "SUBJECT",
-    para: "Subject Resources",
+  const {
+    heading = "SUBJECT",
+    para = "Subject Resources",
+    year = 1,
+    resourceType = "theory",
+    branch = "electrical",
+  } = location.state || {};
+
+  const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchNotes = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await notesApi.list({
+          subject: heading,
+          year: year,
+          resourceType: resourceType,
+          branch: branch,
+          limit: 50,
+          sort: "unit",
+        });
+
+        setNotes(result.data || []);
+      } catch (err) {
+        console.error("Failed to fetch notes:", err);
+        setError("Failed to load notes. Please try again.");
+        setNotes([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotes();
+  }, [heading, year, resourceType, branch]);
+
+  const handlePreview = (note) => {
+    navigate("/pdfpreview", {
+      state: {
+        pdfUrl: note.pdfUrl,
+        title: note.title,
+        noteId: note._id,
+      },
+    });
   };
 
-  const units = [
-    {
-      id: 1,
-      title: "Unit 1",
-    },
-    {
-      id: 2,
-      title: "Unit 2",
-    },
-    {
-      id: 3,
-      title: "Unit 3",
-    },
-    {
-      id: 4,
-      title: "Unit 4",
-    },
-    {
-      id: 5,
-      title: "Unit 5",
-    },
-  ];
+  // Group notes by unit for display
+  const groupedByUnit = {};
+  notes.forEach((note) => {
+    const unitKey = note.unit || 0;
+    if (!groupedByUnit[unitKey]) groupedByUnit[unitKey] = [];
+    groupedByUnit[unitKey].push(note);
+  });
+
+  // If no notes are fetched, show fallback units
+  const displayUnits =
+    notes.length > 0
+      ? Object.keys(groupedByUnit)
+          .sort((a, b) => Number(a) - Number(b))
+          .map((unitKey) => ({
+            unitNumber: Number(unitKey),
+            notes: groupedByUnit[unitKey],
+          }))
+      : [1, 2, 3, 4, 5].map((u) => ({ unitNumber: u, notes: [] }));
 
   return (
     <main className="subject-page">
       <div className="subject-container">
-
-    
         <div className="subject-heading">
           <h1>{heading}</h1>
 
@@ -49,28 +89,52 @@ const Subject = () => {
           </p>
         </div>
 
-    
         <button className="download-all">
           <Download size={22} />
           <span>DOWNLOAD ALL</span>
         </button>
 
-        <Link to="/pdfpreview" className="preview-link" style={{ textDecoration: "none", color: "inherit" }}>
-        <div className="units-grid">
-          {units.map((unit) => (
-            <div className="unit-card" key={unit.id}>
-              <FileText className="file-icon" />
-              <h2>{unit.title}</h2>
-              
-              <button className="unit-download-btn">
-                <span>Preview</span>
-              </button>
-
-            </div>
-          ))}
-        </div>
-        </Link>
-
+        {loading ? (
+          <div style={{ textAlign: "center", padding: "60px 0", color: "#b9b8b5" }}>
+            <p>Loading notes...</p>
+          </div>
+        ) : error ? (
+          <div style={{ textAlign: "center", padding: "60px 0", color: "#e57373" }}>
+            <p>{error}</p>
+          </div>
+        ) : (
+          <div className="units-grid">
+            {displayUnits.map((unitData) => (
+              <div
+                className="unit-card"
+                key={unitData.unitNumber}
+                onClick={() => {
+                  if (unitData.notes.length > 0) {
+                    handlePreview(unitData.notes[0]);
+                  }
+                }}
+                style={{ cursor: unitData.notes.length > 0 ? "pointer" : "default" }}
+              >
+                <FileText className="file-icon" />
+                <h2>
+                  {unitData.unitNumber > 0
+                    ? `Unit ${unitData.unitNumber}`
+                    : "General"}
+                </h2>
+                {unitData.notes.length > 0 && (
+                  <p style={{ color: "#888", fontSize: "13px", margin: "0 0 16px" }}>
+                    {unitData.notes[0].title}
+                  </p>
+                )}
+                <button className="unit-download-btn">
+                  <span>
+                    {unitData.notes.length > 0 ? "Preview" : "Coming Soon"}
+                  </span>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </main>
   );

@@ -10,11 +10,26 @@ import {
   Notebook,
   Info
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { notesApi } from "../services/api";
 
+// Map frontend card IDs to backend resourceType values
+const RESOURCE_TYPE_MAP = {
+  1: "theory",
+  2: "assignment",
+  3: "lab_manual",
+  4: "pyq",
+  5: "handwritten",
+  6: "info",
+};
 
 const Resources = () => {
   const [selectedYear, setSelectedYear] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState(null);
+  const [searching, setSearching] = useState(false);
+  const navigate = useNavigate();
+
   const resourceCards = [
   {
     id: 1,
@@ -54,6 +69,28 @@ const Resources = () => {
   },
 ];
 
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim() || searchQuery.trim().length < 2) return;
+
+    setSearching(true);
+    try {
+      const result = await notesApi.search(searchQuery.trim());
+      setSearchResults(result);
+    } catch (err) {
+      console.error("Search failed:", err);
+      setSearchResults({ data: [], pagination: { total: 0 } });
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch(e);
+    }
+  };
+
   return (
     <div className="main">
 
@@ -75,8 +112,52 @@ const Resources = () => {
           <input
             type="text"
             placeholder="Search for subjects, courses, notes, PYQs..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              if (!e.target.value.trim()) setSearchResults(null);
+            }}
+            onKeyDown={handleSearchKeyDown}
           />
         </div>
+
+        {/* Search results */}
+        {searching && (
+          <p style={{ color: "#d4a373", marginTop: "20px" }}>Searching...</p>
+        )}
+        {searchResults && !searching && (
+          <div style={{ width: "60%", marginTop: "20px" }}>
+            <p style={{ color: "#888", marginBottom: "10px" }}>
+              {searchResults.pagination?.total || 0} result(s) found
+            </p>
+            {searchResults.data?.map((note) => (
+              <div
+                key={note._id}
+                onClick={() =>
+                  navigate("/pdfpreview", {
+                    state: { pdfUrl: note.pdfUrl, title: note.title, noteId: note._id },
+                  })
+                }
+                style={{
+                  padding: "12px 16px",
+                  marginBottom: "8px",
+                  background: "#11161d",
+                  border: "1px solid #222d38",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  transition: "border-color 0.3s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#d4a373")}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#222d38")}
+              >
+                <strong style={{ color: "#f5f5f5" }}>{note.title}</strong>
+                <p style={{ color: "#888", fontSize: "13px", margin: "4px 0 0" }}>
+                  {note.subject} · {note.branch} · Year {note.year} · {note.resourceType}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <div className="year-selector">
@@ -107,7 +188,16 @@ const Resources = () => {
       const Icon = card.icon;
 
       return (
-        <Link to="/ChooseSubject" style={{ textDecoration: 'none', color: 'inherit' }} key={card.id}>
+        <Link
+          to="/ChooseSubject"
+          state={{
+            year: selectedYear,
+            resourceType: RESOURCE_TYPE_MAP[card.id],
+            resourceTitle: card.title,
+          }}
+          style={{ textDecoration: 'none', color: 'inherit' }}
+          key={card.id}
+        >
         <div className="resource-card" key={card.id}>
 
           <div className="resource-icon">

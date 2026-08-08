@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Navbar.css";
 import { NavLink } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 import { Link } from "react-router-dom";
+import { isLoggedIn } from "../../services/api";
+
 const Navbar = () => {
-  const isLoggedIn = true;
+  const [loggedIn, setLoggedIn] = useState(isLoggedIn());
+
+  // Re-check auth status when localStorage changes (e.g., after login/logout in another tab)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setLoggedIn(isLoggedIn());
+    };
+    window.addEventListener("storage", handleStorageChange);
+
+    // Also check periodically for same-tab changes
+    const interval = setInterval(() => {
+      setLoggedIn(isLoggedIn());
+    }, 1000);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
     <nav className="navbar">
@@ -171,7 +191,7 @@ const Navbar = () => {
           <li><NavLink to="/credits">Credits</NavLink></li>
         </ul>
 
-        {isLoggedIn ? (
+        {loggedIn ? (
           <div className="profile">
             <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
             <HiOutlineUserCircle />
