@@ -14,7 +14,7 @@ import { useLocation } from "react-router-dom";
 import LoginPage from './pages/loginPage/LoginPage';
 import Profile from './pages/profile/Profile';
 import About from './pages/InfoPage/About';
-// import PrivacyPolicy from './pages/InfoPage/PrivacyPolicy';
+import PrivacyPolicy from './pages/InfoPage/PrivacyPolicy';
 import Terms from './pages/InfoPage/Terms';
 import Contact from './pages/InfoPage/Contact';
 import Contribute from './pages/InfoPage/Contribute';
@@ -43,7 +43,7 @@ const App = () => {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/auth/callback" element={<OAuthCallback />} />
         <Route path="/about" element={<About/>}/>
-        {/* <Route path="/privacy" element={<PrivacyPolicy />} /> */}
+        <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/contribute" element={<Contribute />} />
