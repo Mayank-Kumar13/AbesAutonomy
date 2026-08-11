@@ -49,11 +49,19 @@ function App() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = authApi.googleLoginUrl();
+    try {
+      window.location.href = authApi.googleLoginUrl();
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const handleGithubLogin = () => {
-    window.location.href = authApi.githubLoginUrl();
+    try {
+      window.location.href = authApi.githubLoginUrl();
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
