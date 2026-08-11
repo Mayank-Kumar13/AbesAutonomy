@@ -13,7 +13,8 @@ import uploadRoutes from './routes/uploadRoutes.js';
 import metaRoutes from './routes/metaRoutes.js';
 
 const app = express();
-
+// ─── Render / Reverse Proxy ──────────────────────────
+app.set('trust proxy', 1);
 // ─── Security middleware ─────────────────────────────
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
