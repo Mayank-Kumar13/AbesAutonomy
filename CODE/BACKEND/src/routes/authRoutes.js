@@ -4,6 +4,8 @@ import {
   login,
   getProfile,
   updateProfile,
+  verifyOtp,
+  resendOtp,
 } from '../controllers/authController.js';
 import {
   forgotPassword,
@@ -15,6 +17,8 @@ import {
   registerValidation,
   loginValidation,
   updateProfileValidation,
+  otpVerifyValidation,
+  otpResendValidation,
 } from '../validators/authValidator.js';
 import {
   forgotPasswordValidation,
@@ -27,6 +31,8 @@ const router = Router();
 // ─── Public routes ────────────────────────────────────
 router.post('/register', authLimiter, registerValidation, validate, register);
 router.post('/login', authLimiter, loginValidation, validate, login);
+router.post('/verify-otp', authLimiter, otpVerifyValidation, validate, verifyOtp);
+router.post('/resend-otp', authLimiter, otpResendValidation, validate, resendOtp);
 router.post('/forgot-password', authLimiter, forgotPasswordValidation, validate, forgotPassword);
 router.post('/reset-password', authLimiter, resetPasswordValidation, validate, resetPassword);
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { authApi } from "../../auth/authApi";
+import "../loginPage/LoginPage.css";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -21,35 +22,44 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "4rem auto", padding: "1rem" }}>
-      <h2>Forgot Password</h2>
+    <div className="modal-overlay">
+      <div className="modal-container">
+        <div className="modal-content">
 
-      {status === "sent" ? (
-        <p>If that email exists, a reset link has been sent. Check your inbox.</p>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <label>
-            Email
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              style={{ display: "block", width: "100%", marginBottom: "1rem" }}
-            />
-          </label>
+          <h2 className="modal-title">FORGOT<br />PASSWORD</h2>
 
-          {error && <p style={{ color: "red" }}>{error}</p>}
+          {status === "sent" ? (
+            <p style={{ textAlign: "center", color: "#e2e8f0", fontSize: "0.9rem" }}>
+              If that email exists, a reset link has been sent. Check your inbox.
+            </p>
+          ) : (
+            <form className="auth-form" onSubmit={handleSubmit}>
+              <div className="input-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
 
-          <button type="submit" disabled={status === "loading"}>
-            {status === "loading" ? "Sending..." : "Send reset link"}
-          </button>
-        </form>
-      )}
+              {error && <p style={{ color: "red", fontSize: "0.9rem" }}>{error}</p>}
 
-      <p style={{ marginTop: "1rem" }}>
-        <Link to="/login">Back to login</Link>
-      </p>
+              <button type="submit" className="submit-btn" disabled={status === "loading"}>
+                {status === "loading" ? "Sending..." : "Send reset link"}
+              </button>
+            </form>
+          )}
+
+          <div className="modal-footer">
+            <p className="create-account">
+              <Link to="/login" className="forgot-link">Back to login</Link>
+            </p>
+          </div>
+
+        </div>
+      </div>
     </div>
   );
 }
