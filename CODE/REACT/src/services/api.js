@@ -9,25 +9,15 @@
 // Local:
 // http://localhost:5000/api
 const API_BASE = import.meta.env.VITE_API_URL;
-// Production:
-// https://abes-autonomy-backend.onrender.com/api
-//
-// Local:
-// http://localhost:5000/api
-const API_BASE = import.meta.env.VITE_API_URL;
 
 /**
  * Get auth token from localStorage.
  */
 const getToken = () => localStorage.getItem('token');
-const getToken = () => localStorage.getItem('token');
 
 /**
  * Set auth token in localStorage.
  */
-export const setToken = (token) => {
-  localStorage.setItem('token', token);
-};
 export const setToken = (token) => {
   localStorage.setItem('token', token);
 };
@@ -38,16 +28,10 @@ export const setToken = (token) => {
 export const removeToken = () => {
   localStorage.removeItem('token');
 };
-export const removeToken = () => {
-  localStorage.removeItem('token');
-};
 
 /**
  * Check if user is logged in.
  */
-export const isLoggedIn = () => {
-  return !!getToken();
-};
 export const isLoggedIn = () => {
   return !!getToken();
 };
@@ -89,14 +73,11 @@ async function request(url, options = {}) {
 
   // Don't set Content-Type for FormData.
   // Browser automatically sets the correct multipart boundary.
-  // Don't set Content-Type for FormData.
-  // Browser automatically sets the correct multipart boundary.
   if (!(options.body instanceof FormData)) {
     headers['Content-Type'] = 'application/json';
   }
 
   const token = getToken();
-
 
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
@@ -106,19 +87,8 @@ async function request(url, options = {}) {
     ...options,
     headers,
     credentials: 'include',
-    credentials: 'include',
   });
 
-  // Handle empty responses safely.
-  const contentType = response.headers.get('content-type');
-
-  let data;
-
-  if (contentType && contentType.includes('application/json')) {
-    data = await response.json();
-  } else {
-    data = await response.text();
-  }
   // Handle empty responses safely.
   const contentType = response.headers.get('content-type');
 
@@ -138,16 +108,8 @@ async function request(url, options = {}) {
 
     const error = new Error(message);
 
-    const message =
-      typeof data === 'object' && data?.message
-        ? data.message
-        : 'Request failed';
-
-    const error = new Error(message);
-
     error.status = response.status;
     error.data = data;
-
 
     throw error;
   }
@@ -155,9 +117,6 @@ async function request(url, options = {}) {
   return data;
 }
 
-// ─────────────────────────────────────────────────────
-// Auth API
-// ─────────────────────────────────────────────────────
 // ─────────────────────────────────────────────────────
 // Auth API
 // ─────────────────────────────────────────────────────
@@ -171,19 +130,12 @@ export const authApi = {
         email,
         password,
       }),
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-      }),
     });
-
 
     if (data.data?.token) {
       setToken(data.data.token);
       setStoredUser(data.data.user);
     }
-
 
     return data;
   },
@@ -195,18 +147,12 @@ export const authApi = {
         email,
         password,
       }),
-      body: JSON.stringify({
-        email,
-        password,
-      }),
     });
-
 
     if (data.data?.token) {
       setToken(data.data.token);
       setStoredUser(data.data.user);
     }
-
 
     return data;
   },
@@ -221,11 +167,9 @@ export const authApi = {
       body: JSON.stringify(updates),
     });
 
-
     if (data.data) {
       setStoredUser(data.data);
     }
-
 
     return data;
   },
@@ -238,21 +182,12 @@ export const authApi = {
 // ─────────────────────────────────────────────────────
 // Notes API
 // ─────────────────────────────────────────────────────
-// ─────────────────────────────────────────────────────
-// Notes API
-// ─────────────────────────────────────────────────────
 
 export const notesApi = {
   async list(filters = {}) {
     const params = new URLSearchParams();
 
-
     for (const [key, value] of Object.entries(filters)) {
-      if (
-        value !== undefined &&
-        value !== null &&
-        value !== ''
-      ) {
       if (
         value !== undefined &&
         value !== null &&
@@ -262,10 +197,7 @@ export const notesApi = {
       }
     }
 
-
     const qs = params.toString();
-
-    return request(`/notes${qs ? `?${qs}` : ''}`);
 
     return request(`/notes${qs ? `?${qs}` : ''}`);
   },
@@ -275,13 +207,6 @@ export const notesApi = {
   },
 
   async search(query, page = 1, limit = 20) {
-    const params = new URLSearchParams({
-      q: query,
-      page: String(page),
-      limit: String(limit),
-    });
-
-    return request(`/notes/search?${params.toString()}`);
     const params = new URLSearchParams({
       q: query,
       page: String(page),
@@ -312,18 +237,9 @@ export const notesApi = {
         method: 'DELETE',
       }
     );
-    return request(
-      `/notes/${id}?deleteFile=${deleteFile}`,
-      {
-        method: 'DELETE',
-      }
-    );
   },
 
   async incrementView(id) {
-    return request(`/notes/${id}/view`, {
-      method: 'POST',
-    });
     return request(`/notes/${id}/view`, {
       method: 'POST',
     });
@@ -333,21 +249,12 @@ export const notesApi = {
 // ─────────────────────────────────────────────────────
 // Meta API
 // ─────────────────────────────────────────────────────
-// ─────────────────────────────────────────────────────
-// Meta API
-// ─────────────────────────────────────────────────────
 
 export const metaApi = {
   async getSubjects(filters = {}) {
     const params = new URLSearchParams();
 
-
     for (const [key, value] of Object.entries(filters)) {
-      if (
-        value !== undefined &&
-        value !== null &&
-        value !== ''
-      ) {
       if (
         value !== undefined &&
         value !== null &&
@@ -357,12 +264,7 @@ export const metaApi = {
       }
     }
 
-
     const qs = params.toString();
-
-    return request(
-      `/meta/subjects${qs ? `?${qs}` : ''}`
-    );
 
     return request(
       `/meta/subjects${qs ? `?${qs}` : ''}`
@@ -381,18 +283,12 @@ export const metaApi = {
 // ─────────────────────────────────────────────────────
 // Upload API
 // ─────────────────────────────────────────────────────
-// ─────────────────────────────────────────────────────
-// Upload API
-// ─────────────────────────────────────────────────────
 
 export const uploadApi = {
   async uploadPdf(file, metadata = {}) {
-  async uploadPdf(file, metadata = {}) {
     const formData = new FormData();
 
-
     formData.append('pdf', file);
-
 
     for (const [key, value] of Object.entries(metadata)) {
       formData.append(
@@ -401,14 +297,7 @@ export const uploadApi = {
           ? JSON.stringify(value)
           : value
       );
-      formData.append(
-        key,
-        typeof value === 'object'
-          ? JSON.stringify(value)
-          : value
-      );
     }
-
 
     return request('/upload/pdf', {
       method: 'POST',
