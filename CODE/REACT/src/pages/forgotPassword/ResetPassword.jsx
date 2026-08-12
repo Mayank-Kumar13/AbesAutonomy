@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { authApi } from "../../auth/authApi";
+import "../loginPage/LoginPage.css";
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
@@ -37,48 +38,56 @@ export default function ResetPassword() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "4rem auto", padding: "1rem" }}>
-      <h2>Reset Password</h2>
+    <div className="modal-overlay">
+      <div className="modal-container">
+        <div className="modal-content">
 
-      {status === "done" ? (
-        <p>Password reset successful. Redirecting to login...</p>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <label>
-            New Password
-            <input
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-              minLength={6}
-              style={{ display: "block", width: "100%", marginBottom: "1rem" }}
-            />
-          </label>
+          <h2 className="modal-title">RESET<br />PASSWORD</h2>
 
-          <label>
-            Confirm Password
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              minLength={6}
-              style={{ display: "block", width: "100%", marginBottom: "1rem" }}
-            />
-          </label>
+          {status === "done" ? (
+            <p style={{ textAlign: "center", color: "#e2e8f0", fontSize: "0.9rem" }}>
+              Password reset successful. Redirecting to login...
+            </p>
+          ) : (
+            <form className="auth-form" onSubmit={handleSubmit}>
+              <div className="input-group">
+                <label>New Password</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  minLength={6}
+                />
+              </div>
 
-          {error && <p style={{ color: "red" }}>{error}</p>}
+              <div className="input-group">
+                <label>Confirm Password</label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={6}
+                />
+              </div>
 
-          <button type="submit" disabled={status === "loading"}>
-            {status === "loading" ? "Resetting..." : "Reset Password"}
-          </button>
-        </form>
-      )}
+              {error && <p style={{ color: "red", fontSize: "0.9rem" }}>{error}</p>}
 
-      <p style={{ marginTop: "1rem" }}>
-        <Link to="/login">Back to login</Link>
-      </p>
+              <button type="submit" className="submit-btn" disabled={status === "loading"}>
+                {status === "loading" ? "Resetting..." : "Reset Password"}
+              </button>
+            </form>
+          )}
+
+          <div className="modal-footer">
+            <p className="create-account">
+              <Link to="/login" className="forgot-link">Back to login</Link>
+            </p>
+          </div>
+
+        </div>
+      </div>
     </div>
   );
 }

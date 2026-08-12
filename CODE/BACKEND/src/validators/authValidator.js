@@ -40,3 +40,17 @@ export const updateProfileValidation = [
     .isEmail().withMessage('Invalid email format')
     .normalizeEmail(),
 ];
+
+export const otpVerifyValidation = [
+  body('userId').notEmpty().withMessage('userId is required'),
+  body('otp')
+    .trim()
+    .isLength({ min: 6, max: 6 }).withMessage('OTP must be 6 digits')
+    .isNumeric().withMessage('OTP must be numeric'),
+  body('purpose').optional().isIn(['signup', 'login']).withMessage('Invalid purpose'),
+];
+
+export const otpResendValidation = [
+  body('userId').notEmpty().withMessage('userId is required'),
+  body('purpose').optional().isIn(['signup', 'login']).withMessage('Invalid purpose'),
+];
