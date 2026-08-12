@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ChooseSubject.css';
 import Unicard from "../../component/universal_card/Unicard";
+import Credit_Card from "../../component/credit_card/Credit_Card";
 import {Link, useLocation} from 'react-router-dom';
 import { 
   LineChart, 
@@ -51,6 +52,18 @@ const FALLBACK_SUBJECTS = {
   electronics: ['DSA', 'MATHS', 'SOFT SKILL', 'DT', 'MECHANICS', 'ELECTRONICS'],
 };
 
+
+const HANDWRITTEN_CREDIT = {
+  name: "NITIN",
+  year: "2nd Year",
+  description:
+    "Topper student with 10 SGPA. Contributed high-quality handwritten notes to help fellow students excel in their academics.",
+  image: "/NITIN.jpeg",
+  github: "#",
+  linkedin: "#",
+  instagram: "#",
+};
+
 const ChooseSubject = () => {
   const location = useLocation();
   const { year = 1, resourceType = 'theory', resourceTitle = 'THEORY NOTES' } = location.state || {};
@@ -58,6 +71,8 @@ const ChooseSubject = () => {
   const [activeGroup, setActiveGroup] = useState('electrical');
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const isHandwritten = resourceType === 'handwritten';
 
   // Always use the static subjects configuration as requested by the user.
   // We do not want to hide subjects just because they lack MongoDB records.
@@ -118,6 +133,29 @@ const ChooseSubject = () => {
                 />
               </Link>
             ))}
+          </div>
+        )}
+
+        {/* ─── Credit Card — Only for Handwritten Notes ─── */}
+        {isHandwritten && (
+          <div className="handwritten-credit-section">
+            <div className="handwritten-credit-header">
+              <h2 className="handwritten-credit-title">Notes Contributed By</h2>
+              <p className="handwritten-credit-subtitle">
+                Special thanks to the student who made these handwritten notes available for everyone.
+              </p>
+            </div>
+            <div className="handwritten-credit-card-wrapper">
+              <Credit_Card
+                name={HANDWRITTEN_CREDIT.name}
+                year={HANDWRITTEN_CREDIT.year}
+                description={HANDWRITTEN_CREDIT.description}
+                image={HANDWRITTEN_CREDIT.image}
+                github={HANDWRITTEN_CREDIT.github}
+                linkedin={HANDWRITTEN_CREDIT.linkedin}
+                instagram={HANDWRITTEN_CREDIT.instagram}
+              />
+            </div>
           </div>
         )}
       </div>

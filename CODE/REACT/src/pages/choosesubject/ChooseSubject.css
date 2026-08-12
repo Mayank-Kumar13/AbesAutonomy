@@ -190,3 +190,57 @@
 .explore-btn:hover {
   border-color: #d99b78;
 }
+
+/* ═══════════════════════════════════════════════════════
+   Handwritten Notes — Credit Section
+   ═══════════════════════════════════════════════════════ */
+
+.handwritten-credit-section {
+  margin-top: 5rem;
+  padding-top: 3rem;
+  border-top: 1px solid #1f2937;
+}
+
+.handwritten-credit-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.handwritten-credit-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2rem;
+  font-weight: 500;
+  color: #fff;
+  margin: 0 0 0.75rem 0;
+  letter-spacing: 0.03em;
+}
+
+.handwritten-credit-subtitle {
+  color: #9ca3af;
+  font-size: 1rem;
+  max-width: 450px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.handwritten-credit-card-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+/* Override the credit-card bottom margin inside this context
+   so it doesn't create excessive spacing before the footer */
+.handwritten-credit-card-wrapper .credit-card {
+  margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+  .handwritten-credit-title {
+    font-size: 1.5rem;
+  }
+
+  .handwritten-credit-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+  }
+}

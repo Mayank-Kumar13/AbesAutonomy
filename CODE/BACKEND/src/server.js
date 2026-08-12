@@ -7,7 +7,7 @@ const startServer = async () => {
   await connectDB();
 
   // Start HTTP server
-  const server = app.listen(env.PORT, () => {
+  const server = app.listen(env.PORT,'0.0.0.0', () => {
     console.log(`\n🚀 ABES Autonomy API Server`);
     console.log(`   Environment: ${env.NODE_ENV}`);
     console.log(`   Port:        ${env.PORT}`);
