@@ -3,7 +3,6 @@ import "./HomeContent.css";
 import buildingPhoto from "../../../IMAGES/BUILDING.png";
 import { Link } from "react-router-dom";
 import {
-  Search,
   ClipboardList,
   FlaskConical,
   Copy,
@@ -103,23 +102,16 @@ const HomeContent = () => {
   return (
     <main className="home">
 
-      {/* SEARCH SECTION */}
-      <section className="search-section">
+      {/* WELCOME SECTION */}
+      <section className="welcome-section">
 
-        <h1 className="search-heading">
-          WHAT ARE YOU SEARCHING FOR?
+        <h1 className="welcome-heading">
+          Welcome to Abes Autonomy
         </h1>
 
-        <div className="search-box">
-
-          <Search className="search-icon" size={22} />
-
-          <input
-            type="text"
-            placeholder="Search for subjects, courses, notes, PYQs..."
-          />
-
-        </div>
+        <p className="welcome-quote">
+          "Success is the sum of small efforts, repeated day in and day out."
+        </p>
 
       </section>
 
