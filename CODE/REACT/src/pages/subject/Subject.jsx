@@ -104,35 +104,61 @@ const Subject = () => {
           </div>
         ) : (
           <div className="units-grid">
-            {displayUnits.map((unitData) => (
-              <div
-                className="unit-card"
-                key={unitData.unitNumber}
-                onClick={() => {
-                  if (unitData.notes.length > 0) {
-                    handlePreview(unitData.notes[0]);
-                  }
-                }}
-                style={{ cursor: unitData.notes.length > 0 ? "pointer" : "default" }}
-              >
-                <FileText className="file-icon" />
-                <h2>
-                  {unitData.unitNumber > 0
-                    ? `Unit ${unitData.unitNumber}`
-                    : "General"}
-                </h2>
-                {unitData.notes.length > 0 && (
-                  <p style={{ color: "#888", fontSize: "13px", margin: "0 0 16px" }}>
-                    {unitData.notes[0].title}
-                  </p>
-                )}
-                <button className="unit-download-btn">
-                  <span>
-                    {unitData.notes.length > 0 ? "Preview" : "Coming Soon"}
-                  </span>
-                </button>
-              </div>
-            ))}
+            {displayUnits.map((unitData) =>
+              unitData.notes.length > 1 ? (
+                // Multiple files share this unit (common for PYQs, which usually
+                // don't have a meaningful "unit") — show each one as its own card.
+                unitData.notes.map((note) => (
+                  <div
+                    className="unit-card"
+                    key={note._id}
+                    onClick={() => handlePreview(note)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <FileText className="file-icon" />
+                    <h2>
+                      {unitData.unitNumber > 0
+                        ? `Unit ${unitData.unitNumber}`
+                        : "General"}
+                    </h2>
+                    <p style={{ color: "#888", fontSize: "13px", margin: "0 0 16px" }}>
+                      {note.title}
+                    </p>
+                    <button className="unit-download-btn">
+                      <span>Preview</span>
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <div
+                  className="unit-card"
+                  key={unitData.unitNumber}
+                  onClick={() => {
+                    if (unitData.notes.length > 0) {
+                      handlePreview(unitData.notes[0]);
+                    }
+                  }}
+                  style={{ cursor: unitData.notes.length > 0 ? "pointer" : "default" }}
+                >
+                  <FileText className="file-icon" />
+                  <h2>
+                    {unitData.unitNumber > 0
+                      ? `Unit ${unitData.unitNumber}`
+                      : "General"}
+                  </h2>
+                  {unitData.notes.length > 0 && (
+                    <p style={{ color: "#888", fontSize: "13px", margin: "0 0 16px" }}>
+                      {unitData.notes[0].title}
+                    </p>
+                  )}
+                  <button className="unit-download-btn">
+                    <span>
+                      {unitData.notes.length > 0 ? "Preview" : "Coming Soon"}
+                    </span>
+                  </button>
+                </div>
+              )
+            )}
           </div>
         )}
       </div>
