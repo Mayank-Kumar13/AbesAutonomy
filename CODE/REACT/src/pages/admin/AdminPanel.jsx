@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { authApi } from '../../auth/authApi';
 import { uploadApi, notesApi } from '../../services/api';
 import './AdminPanel.css';
@@ -50,6 +50,7 @@ export default function AdminPanel() {
   const [uploading, setUploading] = useState(false);
   const [uploadMsg, setUploadMsg] = useState(null); // { type: 'success' | 'error', text }
   const [deletingId, setDeletingId] = useState(null);
+  const notesLoadedRef = useRef(false);
 
   const loadAll = useCallback(async () => {
     try {
@@ -84,15 +85,16 @@ export default function AdminPanel() {
 
   useEffect(() => {
     loadAll();
-    const interval = setInterval(loadAll, 15000);
+    const interval = setInterval(loadAll, 60000);
     return () => clearInterval(interval);
   }, [loadAll]);
 
   useEffect(() => {
-    if (tab === 'uploads' && notes.length === 0 && !notesLoading) {
+    if (tab === 'uploads' && !notesLoadedRef.current) {
+      notesLoadedRef.current = true;
       loadNotes();
     }
-  }, [tab, notes.length, notesLoading, loadNotes]);
+  }, [tab, loadNotes]);
 
   const handleUploadFieldChange = (field) => (e) => {
     setUploadForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -414,7 +416,7 @@ export default function AdminPanel() {
           <div className="upload-list-section">
             <div className="upload-list-header">
               <h2 className="upload-form-title">Uploaded Notes ({notes.length})</h2>
-              <button type="button" className="upload-reset-btn" onClick={loadNotes} disabled={notesLoading}>
+              <button type="button" className="upload-reset-btn" onClick={() => { notesLoadedRef.current = true; loadNotes(); }} disabled={notesLoading}>
                 Refresh
               </button>
             </div>
