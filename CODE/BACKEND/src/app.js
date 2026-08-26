@@ -11,9 +11,12 @@ import authRoutes from './routes/authRoutes.js';
 import oauthRoutes from './routes/oauthRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import metaRoutes from './routes/metaRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 const app = express();
-
+// ─── Render / Reverse Proxy ──────────────────────────
+app.set('trust proxy', 1);
 // ─── Security middleware ─────────────────────────────
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
@@ -67,6 +70,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/auth', oauthRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/meta', metaRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/admin', adminRoutes);
 
 // ─── 404 handler ─────────────────────────────────────
 app.use('/api/{*path}', (req, res) => {

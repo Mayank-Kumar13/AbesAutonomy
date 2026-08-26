@@ -104,7 +104,7 @@ const Resources = () => {
         </p>
       </div>
 
-      <section className="search-section">
+      {/* <section className="search-section">
 
         <div className="search-box">
           <Search className="search-icon" size={22} />
@@ -121,7 +121,7 @@ const Resources = () => {
           />
         </div>
 
-        {/* Search results */}
+        {/* Search results 
         {searching && (
           <p style={{ color: "#d4a373", marginTop: "20px" }}>Searching...</p>
         )}
@@ -158,7 +158,7 @@ const Resources = () => {
             ))}
           </div>
         )}
-      </section>
+      </section> */}
 
       {/* <div className="year-selector">
 

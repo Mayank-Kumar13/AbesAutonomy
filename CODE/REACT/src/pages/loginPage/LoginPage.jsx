@@ -11,7 +11,14 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { login, register } = useAuth();
+  const [otpStep, setOtpStep] = useState(false);
+  const [otpPurpose, setOtpPurpose] = useState('signup');
+  const [otpUserId, setOtpUserId] = useState(null);
+  const [otpEmail, setOtpEmail] = useState('');
+  const [otpValue, setOtpValue] = useState('');
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  const { login, register, verifyOtp, resendOtp } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const redirectTo = location.state?.from?.pathname || '/';
@@ -35,17 +42,69 @@ function App() {
     setError('');
     setIsLoading(true);
     try {
-      if (activeTab === 'login') {
-        await login(formData.email, formData.password);
-      } else {
-        await register(formData.name, formData.email, formData.password);
-      }
-      navigate(redirectTo, { replace: true });
+      const data =
+        activeTab === 'login'
+          ? await login(formData.email, formData.password)
+          : await register(formData.name, formData.email, formData.password);
+
+      setOtpUserId(data.userId);
+      setOtpEmail(data.email);
+      setOtpPurpose(data.purpose || (activeTab === 'login' ? 'login' : 'signup'));
+      setOtpValue('');
+      setOtpStep(true);
     } catch (err) {
       setError(err.message);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleOtpChange = (e) => {
+    const val = e.target.value.replace(/\D/g, '').slice(0, 6);
+    setOtpValue(val);
+    if (error) setError('');
+  };
+
+  const handleOtpSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+    try {
+      await verifyOtp(otpUserId, otpValue, otpPurpose);
+      navigate(redirectTo, { replace: true });
+    } catch (err) {
+      setError(err.message);
+      setOtpValue('');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (resendCooldown > 0) return;
+    setError('');
+    try {
+      await resendOtp(otpUserId, otpPurpose);
+      setOtpValue('');
+      setResendCooldown(30);
+      const timer = setInterval(() => {
+        setResendCooldown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleBackToSignup = () => {
+    setOtpStep(false);
+    setOtpValue('');
+    setError('');
   };
 
   const handleGoogleLogin = () => {
@@ -63,6 +122,68 @@ function App() {
       setError(err.message);
     }
   };
+
+  if (otpStep) {
+    return (
+      <div className="modal-overlay">
+        <div className="modal-container">
+          <div className="modal-content">
+
+            <h2 className="modal-title">VERIFY YOUR<br />IDENTITY</h2>
+
+            <p style={{ textAlign: 'center', fontSize: '0.9rem', marginBottom: '1rem', color: '#e2e8f0' }}>
+              We sent a 6-digit code to <strong>{otpEmail}</strong>
+            </p>
+
+            <form className="auth-form" onSubmit={handleOtpSubmit}>
+              <div className="input-group">
+                <label>OTP Code</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  name="otp"
+                  value={otpValue}
+                  onChange={handleOtpChange}
+                  placeholder="123456"
+                  maxLength={6}
+                  required
+                  autoFocus
+                />
+              </div>
+
+              {error && <p style={{ color: 'red', fontSize: '0.9rem' }}>{error}</p>}
+
+              <button type="submit" className="submit-btn" disabled={isLoading || otpValue.length !== 6}>
+                {isLoading ? (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                    <Loader2 size={18} className="animate-spin" style={{ animation: 'spin 1s linear infinite' }} /> Verifying...
+                  </div>
+                ) : (
+                  'Verify & Continue'
+                )}
+              </button>
+            </form>
+
+            <div className="modal-footer">
+              <p className="create-account">
+                Didn't get the code?{' '}
+                <span
+                  onClick={handleResendOtp}
+                  style={{ cursor: resendCooldown > 0 ? 'default' : 'pointer', opacity: resendCooldown > 0 ? 0.6 : 1 }}
+                >
+                  {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : '[Resend OTP]'}
+                </span>
+              </p>
+              <p className="create-account">
+                <span onClick={handleBackToSignup}>[Back]</span>
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="modal-overlay">

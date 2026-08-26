@@ -48,3 +48,21 @@ export const sendLoginNotificationEmail = async (toEmail, { provider, time }) =>
     text,
   });
 };
+
+export const sendOtpEmail = async (toEmail, otp) => {
+  const subject = 'Your ABES Autonomy verification code';
+  const text = `Your OTP is: ${otp}\n\nValid for 10 minutes. Do not share this code with anyone.`;
+
+  if (!env.SMTP_HOST) {
+    console.log(`[DEV EMAIL] To: ${toEmail}\n${text}`);
+    return;
+  }
+
+  const transporter = getTransporter();
+  await transporter.sendMail({
+    from: env.SMTP_FROM,
+    to: toEmail,
+    subject,
+    text,
+  });
+};

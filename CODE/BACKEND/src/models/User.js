@@ -57,6 +57,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    lastActiveAt: {
+      type: Date,
+      default: null,
+    },
+    totalWatchTimeMs: {
+      type: Number,
+      default: 0,
+    },
     profilePicture: {
       type: String,
       default: '',
@@ -83,6 +91,7 @@ const userSchema = new mongoose.Schema(
 userSchema.index(
   { provider: 1, providerId: 1 },
   { unique: true, partialFilterExpression: { providerId: { $type: 'string' } } }
+  
 );
 
 // ─── Pre-save: hash password ─────────────────────────

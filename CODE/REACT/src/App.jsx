@@ -22,6 +22,8 @@ import ForgotPassword from './pages/forgotPassword/ForgotPassword';
 import ResetPassword from './pages/forgotPassword/ResetPassword';
 import OAuthCallback from './pages/oauth/OAuthCallback';
 import ProtectedRoute from './auth/ProtectedRoute';
+import AdminPanel from './pages/admin/AdminPanel';
+import AdminRoute from './auth/AdminRoute';
 
 const App = () => {
   return (
@@ -47,6 +49,7 @@ const App = () => {
         <Route path="/terms" element={<Terms />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/contribute" element={<Contribute />} />
+        <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
       </Routes>
       <Footer />
     </>

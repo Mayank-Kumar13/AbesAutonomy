@@ -23,11 +23,6 @@ async function request(path, options = {}) {
   return data;
 }
 
-/**
- * Builds an OAuth redirect URL and validates that API_URL is configured.
- * @param {string} provider - The OAuth provider path (e.g., "/auth/google")
- * @returns {string} The full OAuth URL
- */
 function buildOAuthUrl(provider) {
   const url = `${API_URL}${provider}`;
   if (url.includes("undefined")) {
@@ -52,6 +47,18 @@ export const authApi = {
       body: JSON.stringify({ email, password }),
     }),
 
+  verifyOtp: (userId, otp, purpose = "signup") =>
+    request("/auth/verify-otp", {
+      method: "POST",
+      body: JSON.stringify({ userId, otp, purpose }),
+    }),
+
+  resendOtp: (userId, purpose = "signup") =>
+    request("/auth/resend-otp", {
+      method: "POST",
+      body: JSON.stringify({ userId, purpose }),
+    }),
+
   getProfile: () => request("/auth/profile"),
 
   updateProfile: (updates) =>
@@ -74,4 +81,14 @@ export const authApi = {
 
   googleLoginUrl: () => buildOAuthUrl("/auth/google"),
   githubLoginUrl: () => buildOAuthUrl("/auth/github"),
+
+  heartbeat: (intervalMs = 20000) =>
+    request("/activity/heartbeat", {
+      method: "POST",
+      body: JSON.stringify({ intervalMs }),
+    }),
+
+  getAdminStats: () => request("/admin/stats"),
+  getAdminUsers: () => request("/admin/users"),
+  getAdminLogs: () => request("/admin/logs"),
 };
